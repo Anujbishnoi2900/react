@@ -1,13 +1,13 @@
 import { useEffect, useState, useContext } from "react";
 import Search from "./Search";
 import { Link } from "react-router-dom";
-import { CartContext } from "./CartContext";
+// import { CartContext } from "./CartContext";
 
 const Home = () => {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
 
-  const { cart } = useContext(CartContext); // ✅ Yaha likhna hai
+  // const { cart } = useContext(CartContext); 
 
   useEffect(() => {
     async function api() {
@@ -24,10 +24,10 @@ const Home = () => {
 
   return (
     <>
-      {/* 👇 Yaha show karna hai */}
-      <h2 className="text-center text-xl font-bold mt-4">
+
+      {/* <h2 className="text-center text-xl font-bold mt-4">
         Cart Items: {cart.length}
-      </h2>
+      </h2> */}
 
       <Search setSearch={setSearch} />
 
@@ -47,7 +47,7 @@ const Home = () => {
               {list.title}
             </p>
 
-            <Link to={`/product/${list.id}`}>
+            <Link to={`/product/${list.id}/${list.title}`}>
               <button className="bg-amber-600 p-2 m-1 rounded-xl border text-white font-bold">
                 View detail
               </button>

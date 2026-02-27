@@ -7,7 +7,7 @@
 
 //   const addToCart = (product) => {
 //     setCart([...cart, product]);
-//   };
+//   }; 
 
 //   return (
 //     <CartContext.Provider value={{ cart, addToCart }}>

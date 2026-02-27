@@ -2,32 +2,64 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = ({ setIsAuth }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    email: "",
-    password: ""
+    username: "",
+    password: "",
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
     setForm({
       ...form,
-      [name]: value
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Fake validation
-    if (form.email && form.password) {
-      alert("Login Successful ✅");
-      setIsAuth(true);
-      navigate("/");   
-    } else {
+    if (!form.username || !form.password) {
       alert("Please fill all fields ❌");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      const text = await response.text();
+      console.log("RAW SERVER RESPONSE:", text);
+
+      try {
+        const data = JSON.parse(text);
+
+        if (!response.ok) {
+          alert(data.message || "Invalid credentials ❌");
+          return;
+        }
+
+        // if (data.token) {
+        //   localStorage.setItem("token", data.token)  ;
+        // }
+
+        localStorage.setItem("isAuth", "true");
+        setIsAuth(true);
+        navigate("/dashboard"); 
+
+      } catch (err) {
+        console.error("JSON Parse Error:", err);
+        alert("Server returned invalid JSON ❌");
+      }
+
+    } catch (error) {
+      console.error("Login Error:", error);
+      alert("Server Error ❌");
     }
   };
 
@@ -40,10 +72,10 @@ const Login = ({ setIsAuth }) => {
         <h2 className="text-xl font-bold text-center">Sign In</h2>
 
         <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={form.username}
           onChange={handleChange}
           className="border p-2 w-full"
         />
@@ -68,4 +100,4 @@ const Login = ({ setIsAuth }) => {
   );
 };
 
-export default Login
+export default Login;
